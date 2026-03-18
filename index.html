@@ -62,6 +62,11 @@ button{
   cursor:pointer;
 }
 
+/* ラスボスボタンだけ強調 */
+.boss-btn{
+  background:linear-gradient(135deg,#ff7a7a,#ff3d3d);
+}
+
 /* カード */
 .cards-area{
   display:flex;
@@ -125,12 +130,17 @@ button{
 <div>
 <button onclick="drawOne()">1枚引き</button>
 <button onclick="drawThree()">3枚引き</button>
+<button onclick="drawBoss()" class="boss-btn">ラスボス召喚🔥</button>
 <button onclick="resetCards()">リセット</button>
 </div>
 
 <div class="cards-area" id="cards"></div>
 
 <script>
+
+/* =========================
+   タロット
+========================= */
 
 const cardFiles=[
 "00_The_Fool.png",
@@ -162,7 +172,7 @@ function getRandomCard(){
   return cardFiles[Math.floor(Math.random()*cardFiles.length)];
 }
 
-function createCard(labelText){
+function createTarotCard(labelText){
 
   const card=getRandomCard();
 
@@ -172,11 +182,9 @@ function createCard(labelText){
   const img=document.createElement("img");
   img.src="cards/"+card;
 
-  // ⭐逆位置
   const reversed=Math.random()<0.5;
   if(reversed) img.classList.add("reversed");
 
-  // 🐾コピー内容
   const copyText=card.replace(".png","")+
   (reversed?"（逆位置）":"（正位置）");
 
@@ -202,21 +210,71 @@ function createCard(labelText){
 function drawOne(){
   const area=document.getElementById("cards");
   area.innerHTML="";
-  area.appendChild(createCard(""));
+  area.appendChild(createTarotCard(""));
 }
 
 function drawThree(){
   const area=document.getElementById("cards");
   area.innerHTML="";
 
-  area.appendChild(createCard(""));
-  area.appendChild(createCard(""));
-  area.appendChild(createCard(""));
+  area.appendChild(createTarotCard("過去"));
+  area.appendChild(createTarotCard("現在"));
+  area.appendChild(createTarotCard("未来"));
 }
+
+/* =========================
+   ラスボス
+========================= */
+
+const bossFiles=[
+"boss_people_eyes.png",
+"boss_perfection.png",
+"boss_fear.png",
+"boss_no_confidence.png",
+"boss_compare.png",
+"boss_hurry.png",
+"boss_anxiety.png",
+"boss_attachment.png",
+"boss_past.png",
+"boss_future.png",
+"boss_money.png",
+"boss_overwork.png",
+"boss_guilt.png",
+"boss_giveup.png",
+"boss_endure.png",
+"boss_obligation.png",
+"boss_restraint.png",
+"boss_return.png"
+];
+
+function drawBoss(){
+
+  const area=document.getElementById("cards");
+  area.innerHTML="";
+
+  const boss=bossFiles[Math.floor(Math.random()*bossFiles.length)];
+
+  const box=document.createElement("div");
+  box.className="card-box";
+
+  const img=document.createElement("img");
+  img.src="images/"+boss;
+
+  const label=document.createElement("div");
+  label.className="label";
+  label.textContent="今のラスボス";
+
+  box.appendChild(img);
+  box.appendChild(label);
+
+  area.appendChild(box);
+}
+
+/* ========================= */
 
 function resetCards(){
   document.getElementById("cards").innerHTML="";
-  document.getElementById("question").value=""; // ←★質問もクリア！
+  document.getElementById("question").value="";
 }
 
 </script>
