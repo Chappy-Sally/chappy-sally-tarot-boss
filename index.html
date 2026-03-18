@@ -3,50 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>チャッピー＆サリーのタロットカード</title>
-
 <style>
-
 body{
-  font-family:"Hiragino Kaku Gothic ProN";
+  font-family:"Hiragino Kaku Gothic ProN", sans-serif;
   text-align:center;
   background:#fff0f5;
   padding:20px;
 }
-
-.title-wrap{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:15px;
-}
-
-.side-img{
-  width:70px;
-}
-
-h1{
-  color:#5b3a1e;
-  font-size:26px;
-}
-
-.header-img{
-  width:80%;
-  max-width:400px;
-  border-radius:20px;
-  margin:15px 0;
-}
-
-input{
-  width:80%;
-  max-width:350px;
-  padding:12px;
-  border-radius:20px;
-  border:2px solid #d6b6ff;
-  margin-bottom:15px;
-}
-
 button{
   padding:12px 22px;
   margin:6px;
@@ -55,82 +19,34 @@ button{
   background:linear-gradient(135deg,#f7c1cc,#c9b6ff);
   color:white;
   font-size:16px;
-  cursor:pointer;
 }
-
-.boss-btn{
-  background:linear-gradient(135deg,#ff7a7a,#ff3d3d);
-}
-
-.cards-area{
-  display:flex;
-  justify-content:center;
-  flex-wrap:wrap;
-  gap:20px;
-  margin-top:25px;
-}
-
-.card-box{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-}
-
-.card-box img{
-  width:160px;
+#cards img{
+  width:220px;
   border-radius:12px;
   box-shadow:0 6px 14px rgba(0,0,0,0.2);
 }
-
 .reversed{
   transform:rotate(180deg);
 }
-
-.label{
-  margin-top:6px;
-  font-size:14px;
-  color:#5b3a1e;
-}
-
-.copy-btn{
-  margin-top:8px;
-  font-size:22px;
-  background:linear-gradient(135deg,#f7c1cc,#e6a4b4,#f3d1dc);
-  color:white;
-  border:none;
-  border-radius:50%;
-  padding:10px 14px;
-  cursor:pointer;
-}
-
 </style>
 </head>
-
 <body>
 
-<div class="title-wrap">
-<img src="images/tarot_back.png" class="side-img">
 <h1>チャッピー＆サリーのタロットカード</h1>
-<img src="images/tarot_back.png" class="side-img">
+
+<p>まずは表示テスト✨</p>
+
+<img src="images/CS_hyousi.jpg" width="300">
+
+<div style="margin-top:20px;">
+  <button onclick="drawOne()">タロット1枚</button>
+  <button onclick="drawBoss()">ラスボス1枚</button>
 </div>
 
-<img src="images/CS_hyousi.jpg" class="header-img">
-
-<input id="question" placeholder="今日の問いを入れてから引く">
-
-<div>
-<button onclick="drawOne()">1枚引き</button>
-<button onclick="drawThree()">3枚引き</button>
-<button onclick="drawBoss()" class="boss-btn">ラスボス召喚🔥</button>
-<button onclick="resetCards()">リセット</button>
-</div>
-
-<div class="cards-area" id="cards"></div>
+<div id="cards" style="margin-top:30px;"></div>
 
 <script>
-
-/* タロット */
-const cardFiles=[
+const cardFiles = [
 "00_The_Fool.png",
 "01_The_Magician.png",
 "02_The_High_Priestess.png",
@@ -156,109 +72,52 @@ const cardFiles=[
 "22_Compass.png"
 ];
 
-function getRandomCard(){
-  return cardFiles[Math.floor(Math.random()*cardFiles.length)];
-}
-
-function createTarotCard(labelText){
-
-  const card=getRandomCard();
-
-  const box=document.createElement("div");
-  box.className="card-box";
-
-  const img=document.createElement("img");
-  img.src="images/"+card;
-
-  const reversed=Math.random()<0.5;
-  if(reversed) img.classList.add("reversed");
-
-  const copyText=card.replace(".png","")+
-  (reversed?"（逆位置）":"（正位置）");
-
-  const copyBtn=document.createElement("button");
-  copyBtn.className="copy-btn";
-  copyBtn.textContent="🐾";
-  copyBtn.onclick=()=>{
-    navigator.clipboard.writeText(copyText);
-    alert("コピーしたよ✨\n"+copyText);
-  };
-
-  const label=document.createElement("div");
-  label.className="label";
-  label.textContent=labelText;
-
-  box.appendChild(img);
-  box.appendChild(label);
-  box.appendChild(copyBtn);
-
-  return box;
-}
-
-function drawOne(){
-  const area=document.getElementById("cards");
-  area.innerHTML="";
-  area.appendChild(createTarotCard(""));
-}
-
-function drawThree(){
-  const area=document.getElementById("cards");
-  area.innerHTML="";
-  area.appendChild(createTarotCard("過去"));
-  area.appendChild(createTarotCard("現在"));
-  area.appendChild(createTarotCard("未来"));
-}
-
-/* ラスボス */
-const bossFiles=[
+const bossFiles = [
 "boss_people_eyes.png",
 "boss_perfection.png",
-"boss_fear.png",
-"boss_no_confidence.png",
-"boss_compare.png",
-"boss_hurry.png",
+"boss_fear_of_failure.png",
+"boss_low_confidence.png",
+"boss_comparison.png",
+"boss_impatience.png",
 "boss_anxiety.png",
 "boss_attachment.png",
 "boss_past.png",
-"boss_future.png",
+"boss_future_worry.png",
 "boss_money.png",
 "boss_overwork.png",
 "boss_guilt.png",
-"boss_giveup.png",
-"boss_endure.png",
+"boss_give_up.png",
+"boss_endurance.png",
 "boss_obligation.png",
-"boss_restraint.png",
-"boss_return.png"
+"boss_hesitation.png",
+"boss_return_to_self.png"
 ];
 
+function drawOne(){
+  const area = document.getElementById("cards");
+  area.innerHTML = "";
+
+  const card = cardFiles[Math.floor(Math.random()*cardFiles.length)];
+  const img = document.createElement("img");
+  img.src = "images/" + card;
+
+  if (Math.random() < 0.5) {
+    img.classList.add("reversed");
+  }
+
+  area.appendChild(img);
+}
+
 function drawBoss(){
+  const area = document.getElementById("cards");
+  area.innerHTML = "";
 
-  const area=document.getElementById("cards");
-  area.innerHTML="";
+  const boss = bossFiles[Math.floor(Math.random()*bossFiles.length)];
+  const img = document.createElement("img");
+  img.src = "images/" + boss;
 
-  const boss=bossFiles[Math.floor(Math.random()*bossFiles.length)];
-
-  const box=document.createElement("div");
-  box.className="card-box";
-
-  const img=document.createElement("img");
-  img.src="images/"+boss;
-
-  const label=document.createElement("div");
-  label.className="label";
-  label.textContent="今のラスボス";
-
-  box.appendChild(img);
-  box.appendChild(label);
-
-  area.appendChild(box);
+  area.appendChild(img);
 }
-
-function resetCards(){
-  document.getElementById("cards").innerHTML="";
-  document.getElementById("question").value="";
-}
-
 </script>
 
 </body>
