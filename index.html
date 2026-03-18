@@ -19,18 +19,6 @@
       display:none;
     }
 
-    .title-wrap{
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      gap:15px;
-      margin-top:10px;
-    }
-
-    .side-img{
-      width:70px;
-    }
-
     h1{
       color:#5b3a1e;
       font-size:26px;
@@ -38,10 +26,23 @@
       margin:0;
     }
 
+    .title-wrap{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:12px;
+      margin-top:10px;
+      margin-bottom:10px;
+    }
+
+    .title-icon{
+      font-size:28px;
+    }
+
     .welcome-img,
     .header-img{
       width:80%;
-      max-width:400px;
+      max-width:420px;
       border-radius:20px;
       margin:18px 0;
       box-shadow:0 6px 14px rgba(0,0,0,0.12);
@@ -67,7 +68,7 @@
     }
 
     button{
-      padding:12px 22px;
+      padding:12px 20px;
       margin:6px;
       border:none;
       border-radius:30px;
@@ -130,11 +131,13 @@
       justify-content:center;
       align-items:center;
       margin-top:8px;
+      flex-wrap:wrap;
     }
 
     .copy-btn,
-    .ai-btn{
-      font-size:20px;
+    .ai-btn,
+    .spell-btn{
+      font-size:18px;
       border:none;
       border-radius:50%;
       width:46px;
@@ -158,8 +161,68 @@
       box-shadow:0 4px 10px rgba(111,143,255,0.45);
     }
 
+    .spell-btn{
+      background:linear-gradient(135deg,#ffe08a,#ffc86b,#ffb45e);
+      color:white;
+      box-shadow:0 4px 10px rgba(255,180,94,0.45);
+    }
+
     .button-group{
       margin-top:10px;
+    }
+
+    .summary-box{
+      width:90%;
+      max-width:520px;
+      margin:18px auto 0;
+      padding:14px 16px;
+      border-radius:18px;
+      background:rgba(255,255,255,0.7);
+      box-shadow:0 4px 10px rgba(0,0,0,0.06);
+    }
+
+    .summary-title{
+      font-size:15px;
+      font-weight:bold;
+      color:#6b4b2a;
+      margin-bottom:10px;
+    }
+
+    .spell-text{
+      font-size:16px;
+      color:#7a4d28;
+      line-height:1.8;
+      margin-bottom:8px;
+    }
+
+    .summary-buttons{
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:8px;
+    }
+
+    .mini-btn{
+      padding:10px 16px;
+      border:none;
+      border-radius:24px;
+      color:white;
+      font-size:14px;
+      cursor:pointer;
+      box-shadow:0 4px 10px rgba(0,0,0,0.08);
+    }
+
+    .mini-copy{
+      background:linear-gradient(135deg,#f7c1cc,#e6a4b4,#f3d1dc);
+    }
+
+    .mini-ai{
+      background:linear-gradient(135deg,#8bb7ff,#6f8fff,#8e7cff);
+    }
+
+    .mini-spell{
+      background:linear-gradient(135deg,#ffe08a,#ffc86b,#ffb45e);
     }
   </style>
 </head>
@@ -169,9 +232,9 @@
   <!-- ようこそ画面 -->
   <div id="welcome-screen">
     <div class="title-wrap">
-      <img src="images/tarot_back.png" class="side-img" alt="カード裏">
+      <div class="title-icon">🐶</div>
       <h1>チャッピー＆サリーの<br>タロットカード</h1>
-      <img src="images/tarot_back.png" class="side-img" alt="カード裏">
+      <div class="title-icon">💖</div>
     </div>
 
     <img src="images/CS_hyousi.jpg" class="welcome-img" alt="表紙">
@@ -187,9 +250,9 @@
   <!-- タロット画面 -->
   <div id="tarot-screen" class="hidden">
     <div class="title-wrap">
-      <img src="images/tarot_back.png" class="side-img" alt="カード裏">
+      <div class="title-icon">🔮</div>
       <h1>チャッピー＆サリーの<br>タロットカード</h1>
-      <img src="images/tarot_back.png" class="side-img" alt="カード裏">
+      <div class="title-icon">✨</div>
     </div>
 
     <img src="images/CS_hyousi.jpg" class="header-img" alt="表紙">
@@ -212,10 +275,12 @@
   <!-- ラスボス画面 -->
   <div id="boss-screen" class="hidden">
     <div class="title-wrap">
-      <img src="images/tarot_back.png" class="side-img" alt="カード裏">
+      <div class="title-icon">😈</div>
       <h1>ラスボスをみつける</h1>
-      <img src="images/tarot_back.png" class="side-img" alt="カード裏">
+      <div class="title-icon">🌈</div>
     </div>
+
+    <img src="images/boss_hyousi.png" class="header-img" alt="ラスボス表紙">
 
     <p class="desc">
       今の心にひそんでいるラスボスを<br>
@@ -231,6 +296,9 @@
 
   <!-- 共通表示エリア -->
   <div class="cards-area" id="cards"></div>
+
+  <!-- まとめ表示エリア -->
+  <div id="summary-area"></div>
 
   <script>
     const tarotFiles = [
@@ -280,6 +348,19 @@
       "boss_return_to_self.png"
     ];
 
+    const spellList = [
+      "気づかせてくれてありがとう。",
+      "ここまで守ってくれてありがとう。",
+      "もう大丈夫だよ。安心していいよ。",
+      "これからは一緒にやさしく進んでいこうね。",
+      "無理に消えなくていいよ。そのままで大丈夫。",
+      "私はちゃんと私に戻ってるよ。",
+      "がんばらなくても大丈夫。",
+      "そんな私も、まるごとOK。",
+      "あなたがいたから、ここまで来れたよ。",
+      "だいじょうぶだよ〜🐶✨"
+    ];
+
     function getRandomItem(list){
       return list[Math.floor(Math.random() * list.length)];
     }
@@ -299,6 +380,7 @@
 
     function clearCards(){
       document.getElementById("cards").innerHTML = "";
+      document.getElementById("summary-area").innerHTML = "";
     }
 
     function showTarotScreen(){
@@ -339,6 +421,26 @@
       return text;
     }
 
+    function makeTarotThreeAiPrompt(cards){
+      const name = makeHeaderText();
+      const question = getQuestion();
+
+      let text = name + "\n\n";
+      if(question){
+        text += "質問：\n" + question + "\n\n";
+      }
+      text += "引いたカード\n";
+      cards.forEach((card, index) => {
+        text += (index + 1) + "枚目：" + card.name.replace(".png","") + "（" + (card.reversed ? "逆位置" : "正位置") + "）\n";
+      });
+      text += "\nこの3枚を全体としてやさしく読み解いてください。\n\n";
+      text += "・今の流れ\n";
+      text += "・内側で起きている変化\n";
+      text += "・気づいていない視点\n";
+      text += "・これからの方向性\n";
+      return text;
+    }
+
     function makeBossAiPrompt(labelText, bossName){
       const name = makeHeaderText();
       const question = getQuestion();
@@ -356,6 +458,29 @@
       text += "・なぜ今現れているのか\n";
       text += "・共存のヒント\n";
       text += "・やさしい問い\n";
+      return text;
+    }
+
+    function makeBossThreeAiPrompt(cards){
+      const name = makeHeaderText();
+      const question = getQuestion();
+
+      let text = name + "\n\n";
+      if(question){
+        text += "質問：\n" + question + "\n\n";
+      }
+
+      cards.forEach(card => {
+        text += card.label + "\n";
+        text += card.name.replace(".png","") + "\n\n";
+      });
+
+      text += "この3つを全体としてやさしく読み解いてください。\n\n";
+      text += "これは倒す対象ではなく、私を守ってきた一部として扱ってください。\n\n";
+      text += "・全体の関係性\n";
+      text += "・今の心の状態\n";
+      text += "・共通しているテーマ\n";
+      text += "・やさしい向き合い方\n";
       return text;
     }
 
@@ -403,11 +528,12 @@
       }
       box.appendChild(btnRow);
 
-      return box;
+      return { element: box, name: card, reversed: reversed };
     }
 
-    function createBossCard(labelText){
+    function createBossCard(labelText, spellText = null){
       const boss = getRandomItem(bossFiles);
+      const spell = spellText || getRandomItem(spellList);
 
       const box = document.createElement("div");
       box.className = "card-box";
@@ -422,6 +548,7 @@
 
       const copyText = makeHeaderText() + "\n" + labelText + "\n" + boss.replace(".png","");
       const aiText = makeBossAiPrompt(labelText, boss);
+      const spellCopyText = labelText + " の呪文\n" + spell;
 
       const copyBtn = document.createElement("button");
       copyBtn.className = "copy-btn";
@@ -433,40 +560,201 @@
       aiBtn.textContent = "🤖";
       aiBtn.onclick = () => copyToClipboard(aiText);
 
+      const spellBtn = document.createElement("button");
+      spellBtn.className = "spell-btn";
+      spellBtn.textContent = "🌈";
+      spellBtn.onclick = () => copyToClipboard(spellCopyText);
+
       const btnRow = document.createElement("div");
       btnRow.className = "button-row";
       btnRow.appendChild(copyBtn);
       btnRow.appendChild(aiBtn);
+      btnRow.appendChild(spellBtn);
 
       box.appendChild(img);
       box.appendChild(label);
       box.appendChild(btnRow);
 
-      return box;
+      return { element: box, name: boss, label: labelText, spell: spell };
+    }
+
+    function showBossSpellBox(spellText){
+      const area = document.getElementById("summary-area");
+      area.innerHTML = "";
+
+      const box = document.createElement("div");
+      box.className = "summary-box";
+
+      const title = document.createElement("div");
+      title.className = "summary-title";
+      title.textContent = "🌈 ラスボスと仲良くなる呪文";
+
+      const spell = document.createElement("div");
+      spell.className = "spell-text";
+      spell.textContent = spellText;
+
+      const buttons = document.createElement("div");
+      buttons.className = "summary-buttons";
+
+      const copyBtn = document.createElement("button");
+      copyBtn.className = "mini-btn mini-spell";
+      copyBtn.textContent = "呪文をコピー🌈";
+      copyBtn.onclick = () => copyToClipboard(spellText);
+
+      buttons.appendChild(copyBtn);
+
+      box.appendChild(title);
+      box.appendChild(spell);
+      box.appendChild(buttons);
+
+      area.appendChild(box);
+    }
+
+    function showTarotSummaryBox(copyText, aiText){
+      const area = document.getElementById("summary-area");
+      area.innerHTML = "";
+
+      const box = document.createElement("div");
+      box.className = "summary-box";
+
+      const title = document.createElement("div");
+      title.className = "summary-title";
+      title.textContent = "✨ 3枚まとめ";
+
+      const buttons = document.createElement("div");
+      buttons.className = "summary-buttons";
+
+      const copyBtn = document.createElement("button");
+      copyBtn.className = "mini-btn mini-copy";
+      copyBtn.textContent = "3枚まとめコピー🐾";
+      copyBtn.onclick = () => copyToClipboard(copyText);
+
+      const aiBtn = document.createElement("button");
+      aiBtn.className = "mini-btn mini-ai";
+      aiBtn.textContent = "3枚まとめAI🤖";
+      aiBtn.onclick = () => copyToClipboard(aiText);
+
+      buttons.appendChild(copyBtn);
+      buttons.appendChild(aiBtn);
+
+      box.appendChild(title);
+      box.appendChild(buttons);
+
+      area.appendChild(box);
+    }
+
+    function showBossSummaryBox(copyText, aiText, spellText){
+      const area = document.getElementById("summary-area");
+      area.innerHTML = "";
+
+      const box = document.createElement("div");
+      box.className = "summary-box";
+
+      const title = document.createElement("div");
+      title.className = "summary-title";
+      title.textContent = "🌈 ラスボスまとめ";
+
+      const spell = document.createElement("div");
+      spell.className = "spell-text";
+      spell.textContent = spellText;
+
+      const buttons = document.createElement("div");
+      buttons.className = "summary-buttons";
+
+      const copyBtn = document.createElement("button");
+      copyBtn.className = "mini-btn mini-copy";
+      copyBtn.textContent = "3枚まとめコピー🐾";
+      copyBtn.onclick = () => copyToClipboard(copyText);
+
+      const aiBtn = document.createElement("button");
+      aiBtn.className = "mini-btn mini-ai";
+      aiBtn.textContent = "3枚まとめAI🤖";
+      aiBtn.onclick = () => copyToClipboard(aiText);
+
+      const spellBtn = document.createElement("button");
+      spellBtn.className = "mini-btn mini-spell";
+      spellBtn.textContent = "呪文をコピー🌈";
+      spellBtn.onclick = () => copyToClipboard(spellText);
+
+      buttons.appendChild(copyBtn);
+      buttons.appendChild(aiBtn);
+      buttons.appendChild(spellBtn);
+
+      box.appendChild(title);
+      box.appendChild(spell);
+      box.appendChild(buttons);
+
+      area.appendChild(box);
     }
 
     function drawTarotOne(){
       clearCards();
-      document.getElementById("cards").appendChild(createTarotCard(""));
+      const cardObj = createTarotCard("");
+      document.getElementById("cards").appendChild(cardObj.element);
     }
 
     function drawTarotThree(){
       clearCards();
-      document.getElementById("cards").appendChild(createTarotCard(""));
-      document.getElementById("cards").appendChild(createTarotCard(""));
-      document.getElementById("cards").appendChild(createTarotCard(""));
+
+      const card1 = createTarotCard("");
+      const card2 = createTarotCard("");
+      const card3 = createTarotCard("");
+
+      document.getElementById("cards").appendChild(card1.element);
+      document.getElementById("cards").appendChild(card2.element);
+      document.getElementById("cards").appendChild(card3.element);
+
+      const cards = [
+        { name: card1.name, reversed: card1.reversed },
+        { name: card2.name, reversed: card2.reversed },
+        { name: card3.name, reversed: card3.reversed }
+      ];
+
+      let copyText = makeHeaderText() + "\n";
+      cards.forEach((card, index) => {
+        copyText += (index + 1) + "枚目：" + card.name.replace(".png","") + "（" + (card.reversed ? "逆位置" : "正位置") + "）\n";
+      });
+
+      const aiText = makeTarotThreeAiPrompt(cards);
+      showTarotSummaryBox(copyText, aiText);
     }
 
     function drawBossOne(){
       clearCards();
-      document.getElementById("cards").appendChild(createBossCard("今のラスボス"));
+
+      const spell = getRandomItem(spellList);
+      const cardObj = createBossCard("今のラスボス", spell);
+
+      document.getElementById("cards").appendChild(cardObj.element);
+      showBossSpellBox(spell);
     }
 
     function drawBossThree(){
       clearCards();
-      document.getElementById("cards").appendChild(createBossCard("今のラスボス"));
-      document.getElementById("cards").appendChild(createBossCard("隠れラスボス"));
-      document.getElementById("cards").appendChild(createBossCard("心のボス戦"));
+
+      const spell = getRandomItem(spellList);
+
+      const card1 = createBossCard("今のラスボス", spell);
+      const card2 = createBossCard("隠れラスボス", spell);
+      const card3 = createBossCard("心のボス戦", spell);
+
+      document.getElementById("cards").appendChild(card1.element);
+      document.getElementById("cards").appendChild(card2.element);
+      document.getElementById("cards").appendChild(card3.element);
+
+      const cards = [
+        { label: "今のラスボス", name: card1.name },
+        { label: "隠れラスボス", name: card2.name },
+        { label: "心のボス戦", name: card3.name }
+      ];
+
+      let copyText = makeHeaderText() + "\n\n";
+      cards.forEach(card => {
+        copyText += card.label + "\n" + card.name.replace(".png","") + "\n\n";
+      });
+
+      const aiText = makeBossThreeAiPrompt(cards);
+      showBossSummaryBox(copyText, aiText, spell);
     }
 
     function resetAll(){
@@ -478,3 +766,4 @@
 
 </body>
 </html>
+      
