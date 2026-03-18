@@ -681,14 +681,17 @@
       let aiAfterText = "";
 
       if(getQuestion()){
-        aiAfterText += "質問：\n" + getQuestion() + "\n\n";
-      }
+        aiAfterText += "気づきを受け取ったあと、今のあなたへのやさしいメッセージです🌈\n\n";
 
-      cards.forEach((card, index) => {
-        aiAfterText += (index + 1) + "枚目："
-          + card.name.replace(".png","")
-          + "（" + (card.reversed ? "逆位置" : "正位置") + "）\n";
-      });
+if(getQuestion()){
+  aiAfterText += "質問：\n" + getQuestion() + "\n\n";
+}
+
+cards.forEach((card, index) => {
+  aiAfterText += (index + 1) + "枚目：" 
+    + card.name.replace(".png","") 
+    + "（" + (card.reversed ? "逆位置" : "正位置") + "）\n";
+});
 
       showTarotSummaryBox(copyText, aiNowText, aiAfterText);
     }
@@ -736,9 +739,8 @@
       if(getQuestion()){
         aiText += "質問：\n" + getQuestion() + "\n\n";
       }
-      aiText += "この3つのラスボスをやさしく読み解いてください。\n";
-      aiText += "ラスボスは倒す対象ではなく、私を守ってきた一部として扱ってください。\n";
-      aiText += "・全体の関係性\n・今の心の状態\n・共通しているテーマ\n・やさしい向き合い方\n\n";
+      aiText += "気づいたラスボスです🌈\n";
+　　　 aiText += "やさしく見てください。\n\n";
       cards.forEach(card => {
         aiText += card.label + "\n" + card.name.replace(".png","") + "\n\n";
       });
