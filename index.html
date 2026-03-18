@@ -679,23 +679,22 @@
       });
 
       let aiAfterText = "";
+aiAflet aiAfterText = "";
 
-      if(getQuestion()){
-        aiAfterText += "気づきを受け取ったあと、今のあなたへのやさしいメッセージです🌈\n\n";
+aiAfterText += "気づきを受け取ったあと、今のあなたへのやさしいメッセージです🌈\n\n";
 
 if(getQuestion()){
   aiAfterText += "質問：\n" + getQuestion() + "\n\n";
 }
 
 cards.forEach((card, index) => {
-  aiAfterText += (index + 1) + "枚目：" 
-    + card.name.replace(".png","") 
+  aiAfterText += (index + 1) + "枚目："
+    + card.name.replace(".png","")
     + "（" + (card.reversed ? "逆位置" : "正位置") + "）\n";
 });
 
-      showTarotSummaryBox(copyText, aiNowText, aiAfterText);
-    }
-
+showTarotSummaryBox(copyText, aiNowText, aiAfterText);
+}
     function drawBossOne(){
       clearCards();
 
