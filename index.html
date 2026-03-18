@@ -90,6 +90,10 @@
       background:linear-gradient(135deg,#a89adb,#cdbff4);
     }
 
+    .prompt-btn{
+      background:linear-gradient(135deg,#ffcf7d,#ffb76b,#ff9f68);
+    }
+
     .cards-area{
       display:flex;
       justify-content:center;
@@ -135,8 +139,7 @@
     }
 
     .copy-btn,
-    .ai-btn,
-    .spell-btn{
+    .ai-btn{
       font-size:18px;
       border:none;
       border-radius:50%;
@@ -161,23 +164,17 @@
       box-shadow:0 4px 10px rgba(111,143,255,0.45);
     }
 
-    .spell-btn{
-      background:linear-gradient(135deg,#ffe08a,#ffc86b,#ffb45e);
-      color:white;
-      box-shadow:0 4px 10px rgba(255,180,94,0.45);
-    }
-
     .button-group{
       margin-top:10px;
     }
 
     .summary-box{
       width:90%;
-      max-width:520px;
+      max-width:560px;
       margin:18px auto 0;
       padding:14px 16px;
       border-radius:18px;
-      background:rgba(255,255,255,0.7);
+      background:rgba(255,255,255,0.75);
       box-shadow:0 4px 10px rgba(0,0,0,0.06);
     }
 
@@ -192,6 +189,7 @@
       font-size:16px;
       color:#7a4d28;
       line-height:1.8;
+      margin-top:12px;
       margin-bottom:8px;
     }
 
@@ -244,7 +242,13 @@
       自分用にも、セッション用にも使えるよ
     </p>
 
-    <button class="main-btn" onclick="showTarotScreen()">入店する🔘</button>
+    <div class="button-group">
+      <button class="main-btn" onclick="showTarotScreen()">部屋をひらく🔘</button>
+    </div>
+
+    <div class="button-group">
+      <button class="prompt-btn" onclick="copyBasePrompt()">プロンプトCopy🐾</button>
+    </div>
   </div>
 
   <!-- タロット画面 -->
@@ -280,7 +284,8 @@
       <div class="title-icon">🌈</div>
     </div>
 
-    <img src="images/boss_hyousi.png" class="header-img" alt="ラスボス表紙">
+    <img src="images/boss_hyousi.png" class="header-img" alt="ラスボス表紙"
+         onerror="this.src='images/CS_hyousi.jpg'">
 
     <p class="desc">
       今の心にひそんでいるラスボスを<br>
@@ -402,85 +407,48 @@
       return name ? (name + " の結果") : "私の結果";
     }
 
-    function makeTarotAiPrompt(cardName, reversed){
-      const name = makeHeaderText();
-      const question = getQuestion();
-      const position = reversed ? "逆位置" : "正位置";
+    function getBasePrompt(){
+      return [
+        "あなたは、やさしく寄り添うセラピストです。",
+        "このあと私が送る結果を、決めつけず、やわらかく、安心感のある言葉で読み解いてください。",
+        "結果はタロットカードまたはラスボスカードです。",
+        "",
+        "短めに次の5つを日本語で出してください。",
+        "1. 今の状態",
+        "2. 伝わってくるテーマ",
+        "3. 背景や守っているもの",
+        "4. 今できる小さな一歩",
+        "5. やさしいひとこと",
+        "",
+        "ラスボスは倒す対象ではなく、私を守ってきた一部として扱ってください。"
+      ].join("\n");
+    }
 
-      let text = name + "\n\n";
-      if(question){
-        text += "質問：\n" + question + "\n\n";
+    function copyBasePrompt(){
+      copyToClipboard(getBasePrompt());
+    }
+
+    function makeTarotResultText(cardName, reversed, withHeader = false, withQuestion = false){
+      let text = "";
+      if(withHeader){
+        text += makeHeaderText() + "\n";
       }
-      text += "引いたカード\n";
-      text += cardName.replace(".png","") + "（" + position + "）\n\n";
-      text += "このカードをやさしく読み解いてください。\n\n";
-      text += "・今の状態\n";
-      text += "・このカードが伝えたいこと\n";
-      text += "・今意識するといいこと\n";
-      text += "・やさしい一歩\n";
+      if(withQuestion && getQuestion()){
+        text += "質問：\n" + getQuestion() + "\n\n";
+      }
+      text += cardName.replace(".png","") + "（" + (reversed ? "逆位置" : "正位置") + "）";
       return text;
     }
 
-    function makeTarotThreeAiPrompt(cards){
-      const name = makeHeaderText();
-      const question = getQuestion();
-
-      let text = name + "\n\n";
-      if(question){
-        text += "質問：\n" + question + "\n\n";
+    function makeBossResultText(labelText, bossName, withHeader = false, withQuestion = false){
+      let text = "";
+      if(withHeader){
+        text += makeHeaderText() + "\n";
       }
-      text += "引いたカード\n";
-      cards.forEach((card, index) => {
-        text += (index + 1) + "枚目：" + card.name.replace(".png","") + "（" + (card.reversed ? "逆位置" : "正位置") + "）\n";
-      });
-      text += "\nこの3枚を全体としてやさしく読み解いてください。\n\n";
-      text += "・今の流れ\n";
-      text += "・内側で起きている変化\n";
-      text += "・気づいていない視点\n";
-      text += "・これからの方向性\n";
-      return text;
-    }
-
-    function makeBossAiPrompt(labelText, bossName){
-      const name = makeHeaderText();
-      const question = getQuestion();
-
-      let text = name + "\n\n";
-      if(question){
-        text += "質問：\n" + question + "\n\n";
+      if(withQuestion && getQuestion()){
+        text += "質問：\n" + getQuestion() + "\n\n";
       }
-      text += labelText + "\n";
-      text += bossName.replace(".png","") + "\n\n";
-      text += "このラスボスをやさしく読み解いてください。\n\n";
-      text += "これは倒す対象ではなく、私を守ってきた一部として扱ってください。\n\n";
-      text += "・今の私の状態\n";
-      text += "・このラスボスの役割\n";
-      text += "・なぜ今現れているのか\n";
-      text += "・共存のヒント\n";
-      text += "・やさしい問い\n";
-      return text;
-    }
-
-    function makeBossThreeAiPrompt(cards){
-      const name = makeHeaderText();
-      const question = getQuestion();
-
-      let text = name + "\n\n";
-      if(question){
-        text += "質問：\n" + question + "\n\n";
-      }
-
-      cards.forEach(card => {
-        text += card.label + "\n";
-        text += card.name.replace(".png","") + "\n\n";
-      });
-
-      text += "この3つを全体としてやさしく読み解いてください。\n\n";
-      text += "これは倒す対象ではなく、私を守ってきた一部として扱ってください。\n\n";
-      text += "・全体の関係性\n";
-      text += "・今の心の状態\n";
-      text += "・共通しているテーマ\n";
-      text += "・やさしい向き合い方\n";
+      text += labelText + "\n" + bossName.replace(".png","");
       return text;
     }
 
@@ -499,9 +467,8 @@
         img.classList.add("reversed");
       }
 
-      const positionText = reversed ? "（逆位置）" : "（正位置）";
-      const copyText = makeHeaderText() + "\n" + card.replace(".png","") + positionText;
-      const aiText = makeTarotAiPrompt(card, reversed);
+      const copyText = makeTarotResultText(card, reversed, false, false);
+      const aiText = makeTarotResultText(card, reversed, true, true);
 
       const label = document.createElement("div");
       label.className = "label";
@@ -531,9 +498,8 @@
       return { element: box, name: card, reversed: reversed };
     }
 
-    function createBossCard(labelText, spellText = null){
+    function createBossCard(labelText){
       const boss = getRandomItem(bossFiles);
-      const spell = spellText || getRandomItem(spellList);
 
       const box = document.createElement("div");
       box.className = "card-box";
@@ -546,9 +512,8 @@
       label.className = "label";
       label.textContent = labelText;
 
-      const copyText = makeHeaderText() + "\n" + labelText + "\n" + boss.replace(".png","");
-      const aiText = makeBossAiPrompt(labelText, boss);
-      const spellCopyText = labelText + " の呪文\n" + spell;
+      const copyText = makeBossResultText(labelText, boss, false, false);
+      const aiText = makeBossResultText(labelText, boss, true, true);
 
       const copyBtn = document.createElement("button");
       copyBtn.className = "copy-btn";
@@ -560,54 +525,16 @@
       aiBtn.textContent = "🤖";
       aiBtn.onclick = () => copyToClipboard(aiText);
 
-      const spellBtn = document.createElement("button");
-      spellBtn.className = "spell-btn";
-      spellBtn.textContent = "🌈";
-      spellBtn.onclick = () => copyToClipboard(spellCopyText);
-
       const btnRow = document.createElement("div");
       btnRow.className = "button-row";
       btnRow.appendChild(copyBtn);
       btnRow.appendChild(aiBtn);
-      btnRow.appendChild(spellBtn);
 
       box.appendChild(img);
       box.appendChild(label);
       box.appendChild(btnRow);
 
-      return { element: box, name: boss, label: labelText, spell: spell };
-    }
-
-    function showBossSpellBox(spellText){
-      const area = document.getElementById("summary-area");
-      area.innerHTML = "";
-
-      const box = document.createElement("div");
-      box.className = "summary-box";
-
-      const title = document.createElement("div");
-      title.className = "summary-title";
-      title.textContent = "🌈 ラスボスと仲良くなる呪文";
-
-      const spell = document.createElement("div");
-      spell.className = "spell-text";
-      spell.textContent = spellText;
-
-      const buttons = document.createElement("div");
-      buttons.className = "summary-buttons";
-
-      const copyBtn = document.createElement("button");
-      copyBtn.className = "mini-btn mini-spell";
-      copyBtn.textContent = "呪文をコピー🌈";
-      copyBtn.onclick = () => copyToClipboard(spellText);
-
-      buttons.appendChild(copyBtn);
-
-      box.appendChild(title);
-      box.appendChild(spell);
-      box.appendChild(buttons);
-
-      area.appendChild(box);
+      return { element: box, name: boss, label: labelText };
     }
 
     function showTarotSummaryBox(copyText, aiText){
@@ -639,7 +566,6 @@
 
       box.appendChild(title);
       box.appendChild(buttons);
-
       area.appendChild(box);
     }
 
@@ -654,35 +580,40 @@
       title.className = "summary-title";
       title.textContent = "🌈 ラスボスまとめ";
 
-      const spell = document.createElement("div");
-      spell.className = "spell-text";
-      spell.textContent = spellText;
-
       const buttons = document.createElement("div");
       buttons.className = "summary-buttons";
 
       const copyBtn = document.createElement("button");
       copyBtn.className = "mini-btn mini-copy";
-      copyBtn.textContent = "3枚まとめコピー🐾";
+      copyBtn.textContent = "まとめコピー🐾";
       copyBtn.onclick = () => copyToClipboard(copyText);
 
       const aiBtn = document.createElement("button");
       aiBtn.className = "mini-btn mini-ai";
-      aiBtn.textContent = "3枚まとめAI🤖";
+      aiBtn.textContent = "まとめAI🤖";
       aiBtn.onclick = () => copyToClipboard(aiText);
+
+      buttons.appendChild(copyBtn);
+      buttons.appendChild(aiBtn);
+
+      const spell = document.createElement("div");
+      spell.className = "spell-text";
+      spell.textContent = spellText;
+
+      const spellButtons = document.createElement("div");
+      spellButtons.className = "summary-buttons";
 
       const spellBtn = document.createElement("button");
       spellBtn.className = "mini-btn mini-spell";
       spellBtn.textContent = "呪文をコピー🌈";
       spellBtn.onclick = () => copyToClipboard(spellText);
 
-      buttons.appendChild(copyBtn);
-      buttons.appendChild(aiBtn);
-      buttons.appendChild(spellBtn);
+      spellButtons.appendChild(spellBtn);
 
       box.appendChild(title);
-      box.appendChild(spell);
       box.appendChild(buttons);
+      box.appendChild(spell);
+      box.appendChild(spellButtons);
 
       area.appendChild(box);
     }
@@ -715,7 +646,14 @@
         copyText += (index + 1) + "枚目：" + card.name.replace(".png","") + "（" + (card.reversed ? "逆位置" : "正位置") + "）\n";
       });
 
-      const aiText = makeTarotThreeAiPrompt(cards);
+      let aiText = makeHeaderText() + "\n\n";
+      if(getQuestion()){
+        aiText += "質問：\n" + getQuestion() + "\n\n";
+      }
+      cards.forEach((card, index) => {
+        aiText += (index + 1) + "枚目：" + card.name.replace(".png","") + "（" + (card.reversed ? "逆位置" : "正位置") + "）\n";
+      });
+
       showTarotSummaryBox(copyText, aiText);
     }
 
@@ -723,10 +661,14 @@
       clearCards();
 
       const spell = getRandomItem(spellList);
-      const cardObj = createBossCard("今のラスボス", spell);
+      const cardObj = createBossCard("今のラスボス");
 
       document.getElementById("cards").appendChild(cardObj.element);
-      showBossSpellBox(spell);
+
+      const copyText = makeBossResultText("今のラスボス", cardObj.name, true, false);
+      const aiText = makeBossResultText("今のラスボス", cardObj.name, true, true);
+
+      showBossSummaryBox(copyText, aiText, spell);
     }
 
     function drawBossThree(){
@@ -734,9 +676,9 @@
 
       const spell = getRandomItem(spellList);
 
-      const card1 = createBossCard("今のラスボス", spell);
-      const card2 = createBossCard("隠れラスボス", spell);
-      const card3 = createBossCard("心のボス戦", spell);
+      const card1 = createBossCard("今のラスボス");
+      const card2 = createBossCard("隠れラスボス");
+      const card3 = createBossCard("心のボス戦");
 
       document.getElementById("cards").appendChild(card1.element);
       document.getElementById("cards").appendChild(card2.element);
@@ -753,7 +695,14 @@
         copyText += card.label + "\n" + card.name.replace(".png","") + "\n\n";
       });
 
-      const aiText = makeBossThreeAiPrompt(cards);
+      let aiText = makeHeaderText() + "\n\n";
+      if(getQuestion()){
+        aiText += "質問：\n" + getQuestion() + "\n\n";
+      }
+      cards.forEach(card => {
+        aiText += card.label + "\n" + card.name.replace(".png","") + "\n\n";
+      });
+
       showBossSummaryBox(copyText, aiText, spell);
     }
 
@@ -766,4 +715,3 @@
 
 </body>
 </html>
-      
