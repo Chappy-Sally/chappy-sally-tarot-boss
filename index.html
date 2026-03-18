@@ -412,28 +412,23 @@
     }
 
  function getBasePrompt(){
+ function getBasePrompt(){
   return [
     "あなたは、この人のそばにいるやさしい相棒です🐶✨",
     "",
-    "上から教えるのではなく、",
-    "隣で一緒に感じてくれるように話してください。",
+    "カードを解説せず、",
+    "全体をひとつの流れでやさしくまとめてください。",
     "",
-    "これから送るカードを、",
-    "解説ではなく、やさしくまとめてください。",
+    "断定せず、寄り添う言葉で伝えてください。",
+    "がんばらせるのではなく、心がゆるむ言葉にしてください。",
     "",
-    "カードを1枚ずつ説明した上で、",
-    "全体をひとつの流れとして伝えてください。",
-    "",
-    "正しさよりも安心感を大切にし、",
-    "断定せず「こんな見方もできるよ」と寄り添ってください。",
-    "",
-    "がんばらせる言葉ではなく、",
-    "心がゆるむ言葉を選んでください。",
+    "文章は短めで、シンプルにしてください。",
+    "長く説明しすぎないでください。",
     "",
     "最後に「相棒まとめ🐶✨」として、",
-    "この流れを一言でやさしく伝えてください。"
-  ].join("\n");  // ←ここだけ！！
- }
+    "一言でやさしく伝えてください。"
+  ].join("\n");
+}
 
     function copyBasePrompt(){
       copyToClipboard(getBasePrompt());
@@ -666,29 +661,27 @@
         copyText += (index + 1) + "枚目：" + card.name.replace(".png","") + "（" + (card.reversed ? "逆位置" : "正位置") + "）\n";
       });
 
-      let aiNowText = getBasePrompt() + "\n\n" + makeHeaderText() + "\n\n";
+   let aiNowText = "";
+
       if(getQuestion()){
         aiNowText += "質問：\n" + getQuestion() + "\n\n";
       }
-      aiNowText += "この3枚のカードから今の流れをやさしく読み解いてください。\n";
-      aiNowText += "・今の状態\n・気づいていないこと\n・これからの流れ\n\n";
+
       cards.forEach((card, index) => {
         aiNowText += (index + 1) + "枚目：" + card.name.replace(".png","") + "（" + (card.reversed ? "逆位置" : "正位置") + "）\n";
       });
 
-      let aiAfterText = getBasePrompt() + "\n\n" + makeHeaderText() + "\n\n";
+      let aiAfterText = "";
+
       if(getQuestion()){
         aiAfterText += "質問：\n" + getQuestion() + "\n\n";
       }
-      aiAfterText += "この3枚は気づいたあとに引いたカードです。\n";
-      aiAfterText += "これからどう整えていくとよいかをやさしく読み解いてください。\n";
-      aiAfterText += "・活かし方\n・ゆるめること\n・やさしい一歩\n\n";
+
       cards.forEach((card, index) => {
         aiAfterText += (index + 1) + "枚目：" + card.name.replace(".png","") + "（" + (card.reversed ? "逆位置" : "正位置") + "）\n";
       });
 
       showTarotSummaryBox(copyText, aiNowText, aiAfterText);
-    }
 
     function drawBossOne(){
       clearCards();
