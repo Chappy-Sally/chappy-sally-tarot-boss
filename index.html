@@ -73,24 +73,24 @@ const cardFiles = [
 ];
 
 const bossFiles = [
-"boss_people_eyes.png",
-"boss_perfection.png",
-"boss_fear_of_failure.png",
-"boss_low_confidence.png",
-"boss_comparison.png",
-"boss_impatience.png",
-"boss_anxiety.png",
-"boss_attachment.png",
-"boss_past.png",
-"boss_future_worry.png",
-"boss_money.png",
-"boss_overwork.png",
-"boss_guilt.png",
-"boss_give_up.png",
-"boss_endurance.png",
-"boss_obligation.png",
-"boss_hesitation.png",
-"boss_return_to_self.png"
+  "boss_people_eyes.png",
+  "boss_perfection.png",
+  "boss_fear_of_failure.png",
+  "boss_low_confidence.png",
+  "boss_comparison.png",
+  "boss_impatience.png",
+  "boss_anxiety.png",
+  "boss_attachment.png",
+  "boss_past.png",
+  "boss_future_worry.png",
+  "boss_money.png",
+  "boss_overwork.png",
+  "boss_guilt.png",
+  "boss_give_up.png",
+  "boss_endurance.png",
+  "boss_obligation.png",
+  "boss_hesitation.png",
+  "boss_return_to_self.png"
 ];
 
 function drawOne(){
@@ -112,11 +112,23 @@ function drawBoss(){
   const area = document.getElementById("cards");
   area.innerHTML = "";
 
-  const boss = bossFiles[Math.floor(Math.random()*bossFiles.length)];
+  const boss = bossFiles[Math.floor(Math.random() * bossFiles.length)];
+
+  const box = document.createElement("div");
+  box.className = "card-box";
+
   const img = document.createElement("img");
   img.src = "images/" + boss;
 
-  area.appendChild(img);
+  const label = document.createElement("div");
+  label.className = "label";
+  label.textContent = "今のラスボス";
+
+  box.appendChild(img);
+  box.appendChild(label);
+
+  area.appendChild(box);
+
 }
 </script>
 
