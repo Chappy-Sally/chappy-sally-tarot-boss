@@ -637,52 +637,62 @@
     }
 
     function drawTarotThree(){
-      clearCards();
+  clearCards();
 
-      const selectedCards = getRandomItems(tarotFiles, 3);
-      const reversedStates = [Math.random() < 0.5, Math.random() < 0.5, Math.random() < 0.5];
+  const selectedCards = getRandomItems(tarotFiles, 3);
+  const reversedStates = [
+    Math.random() < 0.5,
+    Math.random() < 0.5,
+    Math.random() < 0.5
+  ];
 
-      const card1 = createTarotCard("", selectedCards[0], reversedStates[0]);
-      const card2 = createTarotCard("", selectedCards[1], reversedStates[1]);
-      const card3 = createTarotCard("", selectedCards[2], reversedStates[2]);
+  const card1 = createTarotCard("", selectedCards[0], reversedStates[0]);
+  const card2 = createTarotCard("", selectedCards[1], reversedStates[1]);
+  const card3 = createTarotCard("", selectedCards[2], reversedStates[2]);
 
-      document.getElementById("cards").appendChild(card1.element);
-      document.getElementById("cards").appendChild(card2.element);
-      document.getElementById("cards").appendChild(card3.element);
+  document.getElementById("cards").appendChild(card1.element);
+  document.getElementById("cards").appendChild(card2.element);
+  document.getElementById("cards").appendChild(card3.element);
 
-      const cards = [
-        { name: card1.name, reversed: card1.reversed },
-        { name: card2.name, reversed: card2.reversed },
-        { name: card3.name, reversed: card3.reversed }
-      ];
+  const cards = [
+    { name: card1.name, reversed: card1.reversed },
+    { name: card2.name, reversed: card2.reversed },
+    { name: card3.name, reversed: card3.reversed }
+  ];
 
-      let copyText = makeHeaderText() + "\n";
-      cards.forEach((card, index) => {
-        copyText += (index + 1) + "枚目：" + card.name.replace(".png","") + "（" + (card.reversed ? "逆位置" : "正位置") + "）\n";
-      });
+  let copyText = makeHeaderText() + "\n";
+  cards.forEach((card, index) => {
+    copyText += (index + 1) + "枚目："
+      + card.name.replace(".png","")
+      + "（" + (card.reversed ? "逆位置" : "正位置") + "）\n";
+  });
 
-   let aiNowText = "";
+  let aiNowText = "";
 
-      if(getQuestion()){
-        aiNowText += "質問：\n" + getQuestion() + "\n\n";
-      }
+  if(getQuestion()){
+    aiNowText += "質問：\n" + getQuestion() + "\n\n";
+  }
 
-      cards.forEach((card, index) => {
-        aiNowText += (index + 1) + "枚目：" + card.name.replace(".png","") + "（" + (card.reversed ? "逆位置" : "正位置") + "）\n";
-      });
+  cards.forEach((card, index) => {
+    aiNowText += (index + 1) + "枚目："
+      + card.name.replace(".png","")
+      + "（" + (card.reversed ? "逆位置" : "正位置") + "）\n";
+  });
 
-      let aiAfterText = "";
+  let aiAfterText = "";
 
-      if(getQuestion()){
-        aiAfterText += "質問：\n" + getQuestion() + "\n\n";
-      }
+  if(getQuestion()){
+    aiAfterText += "質問：\n" + getQuestion() + "\n\n";
+  }
 
-      cards.forEach((card, index) => {
-        aiAfterText += (index + 1) + "枚目：" + card.name.replace(".png","") + "（" + (card.reversed ? "逆位置" : "正位置") + "）\n";
-      });
+  cards.forEach((card, index) => {
+    aiAfterText += (index + 1) + "枚目："
+      + card.name.replace(".png","")
+      + "（" + (card.reversed ? "逆位置" : "正位置") + "）\n";
+  });
 
-      showTarotSummaryBox(copyText, aiNowText, aiAfterText);
-    }
+  showTarotSummaryBox(copyText, aiNowText, aiAfterText);
+}
 
     function drawBossOne(){
       clearCards();
