@@ -415,7 +415,7 @@
       return [
         "あなたは、この人のそばにいるやさしい相棒です🐶✨",
         "",
-        "カードを１枚づつ説明した上で、",
+        "カードを解説せず、",
         "全体をひとつの流れでやさしくまとめてください。",
         "",
         "断定せず、寄り添う言葉で伝えてください。",
@@ -542,7 +542,7 @@
       return { element: box, name: boss, label: labelText };
     }
 
-    function showTarotSummaryBox(copyText, aiNowText, aiAfterText){
+    function showTarotSummaryBox(copyText, aiNowText, aiAfterText, titleText = "✨ 3枚まとめ"){
       const area = document.getElementById("summary-area");
       area.innerHTML = "";
 
@@ -551,14 +551,14 @@
 
       const title = document.createElement("div");
       title.className = "summary-title";
-      title.textContent = "✨ 3枚まとめ";
+      title.textContent = titleText;
 
       const buttons = document.createElement("div");
       buttons.className = "summary-buttons";
 
       const copyBtn = document.createElement("button");
       copyBtn.className = "mini-btn mini-copy";
-      copyBtn.textContent = "3枚まとめコピー🐾";
+      copyBtn.textContent = titleText.includes("1枚") ? "1枚コピー🐾" : "3枚まとめコピー🐾";
       copyBtn.onclick = () => copyToClipboard(copyText);
 
       const aiBtn1 = document.createElement("button");
@@ -631,8 +631,27 @@
 
     function drawTarotOne(){
       clearCards();
+
       const cardObj = createTarotCard("");
       document.getElementById("cards").appendChild(cardObj.element);
+
+      let copyText = makeHeaderText() + "\n";
+      copyText += cardObj.name.replace(".png","") + "（" + (cardObj.reversed ? "逆位置" : "正位置") + "）";
+
+      let aiNowText = "";
+      if(getQuestion()){
+        aiNowText += "質問：\n" + getQuestion() + "\n\n";
+      }
+      aiNowText += cardObj.name.replace(".png","") + "（" + (cardObj.reversed ? "逆位置" : "正位置") + "）";
+
+      let aiAfterText = "";
+      aiAfterText += "気づきを受け取ったあと、今のあなたへのやさしいメッセージです🌈\n\n";
+      if(getQuestion()){
+        aiAfterText += "質問：\n" + getQuestion() + "\n\n";
+      }
+      aiAfterText += cardObj.name.replace(".png","") + "（" + (cardObj.reversed ? "逆位置" : "正位置") + "）";
+
+      showTarotSummaryBox(copyText, aiNowText, aiAfterText, "✨ 1枚まとめ");
     }
 
     function drawTarotThree(){
@@ -667,11 +686,9 @@
       });
 
       let aiNowText = "";
-
       if(getQuestion()){
         aiNowText += "質問：\n" + getQuestion() + "\n\n";
       }
-
       cards.forEach((card, index) => {
         aiNowText += (index + 1) + "枚目："
           + card.name.replace(".png","")
@@ -679,20 +696,19 @@
       });
 
       let aiAfterText = "";
-aiAfterText += "気づきを受け取ったあと、今のあなたへのやさしいメッセージです🌈\n\n";
+      aiAfterText += "気づきを受け取ったあと、今のあなたへのやさしいメッセージです🌈\n\n";
+      if(getQuestion()){
+        aiAfterText += "質問：\n" + getQuestion() + "\n\n";
+      }
+      cards.forEach((card, index) => {
+        aiAfterText += (index + 1) + "枚目："
+          + card.name.replace(".png","")
+          + "（" + (card.reversed ? "逆位置" : "正位置") + "）\n";
+      });
 
-if(getQuestion()){
-  aiAfterText += "質問：\n" + getQuestion() + "\n\n";
-}
+      showTarotSummaryBox(copyText, aiNowText, aiAfterText, "✨ 3枚まとめ");
+    }
 
-cards.forEach((card, index) => {
-  aiAfterText += (index + 1) + "枚目："
-    + card.name.replace(".png","")
-    + "（" + (card.reversed ? "逆位置" : "正位置") + "）\n";
-});
-
-showTarotSummaryBox(copyText, aiNowText, aiAfterText);
-}
     function drawBossOne(){
       clearCards();
 
@@ -702,7 +718,14 @@ showTarotSummaryBox(copyText, aiNowText, aiAfterText);
       document.getElementById("cards").appendChild(cardObj.element);
 
       const copyText = makeBossResultText("今のラスボス", cardObj.name, true, false);
-      const aiText = getBasePrompt() + "\n\n" + makeBossResultText("今のラスボス", cardObj.name, true, true);
+
+      let aiText = "";
+      aiText += "気づいたラスボスです🌈\n";
+      aiText += "やさしく見てください。\n\n";
+      if(getQuestion()){
+        aiText += "質問：\n" + getQuestion() + "\n\n";
+      }
+      aiText += "今のラスボス\n" + cardObj.name.replace(".png","");
 
       showBossSummaryBox(copyText, aiText, spell);
     }
@@ -732,17 +755,17 @@ showTarotSummaryBox(copyText, aiNowText, aiAfterText);
         copyText += card.label + "\n" + card.name.replace(".png","") + "\n\n";
       });
 
-      let aiText = getBasePrompt() + "\n\n" + makeHeaderText() + "\n\n";
+      let aiText = "";
+      aiText += "気づいたラスボスです🌈\n";
+      aiText += "やさしく見てください。\n\n";
       if(getQuestion()){
         aiText += "質問：\n" + getQuestion() + "\n\n";
       }
-      aiText += "気づいたラスボスです🌈\n";
-　　　 aiText += "やさしく見てください。\n\n";
       cards.forEach(card => {
         aiText += card.label + "\n" + card.name.replace(".png","") + "\n\n";
       });
 
-    showBossSummaryBox(copyText, aiText, spell);
+      showBossSummaryBox(copyText, aiText, spell);
     }
 
     function resetAll(){
@@ -757,5 +780,3 @@ showTarotSummaryBox(copyText, aiNowText, aiAfterText);
 
 </body>
 </html>
-
-   
