@@ -428,7 +428,7 @@
       return [
         "あなたは、この人のそばにいるやさしい相棒です🐶✨",
         "",
-        "カードを解説せず、",
+        "カードをひとつづつ簡潔に解読した上で",
         "全体をひとつの流れでやさしくまとめてください。",
         "",
         "断定せず、寄り添う言葉で伝えてください。",
@@ -612,7 +612,10 @@
 
       const message = document.createElement("div");
       message.className = "return-message";
-      message.textContent = "ラスボスは、あなたを守るために現れた守り神様✨\n\n気づいたあなたは、もう大丈夫🌈\n\n今のあなたで、もう一度カードを引いてみよう🐶";
+      message.textContent =
+  "ラスボスは、あなたを守るために現れた守り神様✨\n\n" +
+  "気づいたあなたは、もう大丈夫🌈\n\n" +
+  "今のあなたで、もう一度カードを引いてみよう🐶";
 
       const btn = document.createElement("button");
       btn.className = "return-btn";
