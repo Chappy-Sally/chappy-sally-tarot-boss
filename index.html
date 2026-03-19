@@ -93,6 +93,10 @@
       background:linear-gradient(135deg,#ffcf7d,#ffb76b,#ff9f68);
     }
 
+    .return-btn{
+      background:linear-gradient(135deg,#f7c97d,#f2a86b,#ec8fd0);
+    }
+
     .cards-area{
       display:flex;
       justify-content:center;
@@ -126,41 +130,6 @@
       color:#5b3a1e;
       line-height:1.5;
       min-height:24px;
-    }
-
-    .button-row{
-      display:flex;
-      gap:10px;
-      justify-content:center;
-      align-items:center;
-      margin-top:8px;
-      flex-wrap:wrap;
-    }
-
-    .copy-btn,
-    .ai-btn{
-      font-size:20px;
-      border:none;
-      border-radius:50%;
-      width:52px;
-      height:52px;
-      padding:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      cursor:pointer;
-    }
-
-    .copy-btn{
-      background:linear-gradient(135deg,#f7c1cc,#e6a4b4,#f3d1dc);
-      color:white;
-      box-shadow:0 4px 10px rgba(230,164,180,0.6);
-    }
-
-    .ai-btn{
-      background:linear-gradient(135deg,#8bb7ff,#6f8fff,#8e7cff);
-      color:white;
-      box-shadow:0 4px 10px rgba(111,143,255,0.45);
     }
 
     .button-group{
@@ -221,6 +190,24 @@
     .mini-spell{
       background:linear-gradient(135deg,#ffe08a,#ffc86b,#ffb45e);
     }
+
+    .return-box{
+      width:92%;
+      max-width:560px;
+      margin:22px auto 0;
+      padding:20px 16px;
+      border-radius:22px;
+      background:rgba(255,255,255,0.82);
+      box-shadow:0 4px 10px rgba(0,0,0,0.06);
+    }
+
+    .return-message{
+      font-size:20px;
+      color:#7a4d28;
+      line-height:1.9;
+      margin-bottom:14px;
+      white-space:pre-line;
+    }
   </style>
 </head>
 
@@ -238,7 +225,7 @@
 
     <p class="desc">
       チャッピーとサリーの部屋へようこそ✨<br>
-    
+      自分用にも、セッション用にも使えるよ
     </p>
 
     <div class="button-group">
@@ -352,6 +339,27 @@
       "boss_return_to_self.png"
     ];
 
+    const bossNameMap = {
+      boss_people_eyes: "人の目が気になる",
+      boss_perfection: "完璧にしなきゃ",
+      boss_fear_of_failure: "失敗したくない",
+      boss_low_confidence: "自信のなさ",
+      boss_comparison: "比べてしまう気持ち",
+      boss_impatience: "焦り",
+      boss_anxiety: "不安",
+      boss_attachment: "執着",
+      boss_past: "過去へのとらわれ",
+      boss_future_worry: "未来への不安",
+      boss_money: "お金の不安",
+      boss_overwork: "がんばりすぎ",
+      boss_guilt: "罪悪感",
+      boss_give_up: "あきらめ",
+      boss_endurance: "我慢ぐせ",
+      boss_obligation: "〜しなきゃ",
+      boss_hesitation: "迷い",
+      boss_return_to_self: "私に戻りたい気持ち"
+    };
+
     const spellList = [
       "気づかせてくれてありがとう。",
       "ここまで守ってくれてありがとう。",
@@ -380,6 +388,11 @@
 
     function getQuestion(){
       return document.getElementById("question").value.trim();
+    }
+
+    function bossToJapanese(fileName){
+      const key = fileName.replace(".png","");
+      return bossNameMap[key] || key;
     }
 
     function copyToClipboard(text){
@@ -415,7 +428,7 @@
       return [
         "あなたは、この人のそばにいるやさしい相棒です🐶✨",
         "",
-        "カードを１枚づつ読み解いた上で",
+        "カードを解説せず、",
         "全体をひとつの流れでやさしくまとめてください。",
         "",
         "断定せず、寄り添う言葉で伝えてください。",
@@ -453,7 +466,7 @@
       if(withQuestion && getQuestion()){
         text += "質問：\n" + getQuestion() + "\n\n";
       }
-      text += labelText + "\n" + bossName.replace(".png","");
+      text += labelText + "\n" + bossToJapanese(bossName);
       return text;
     }
 
@@ -472,33 +485,14 @@
         img.classList.add("reversed");
       }
 
-      const copyText = makeTarotResultText(card, reversed, false, false);
-      const aiText = makeTarotResultText(card, reversed, true, true);
-
       const label = document.createElement("div");
       label.className = "label";
       label.textContent = labelText;
-
-      const copyBtn = document.createElement("button");
-      copyBtn.className = "copy-btn";
-      copyBtn.textContent = "🐾";
-      copyBtn.onclick = () => copyToClipboard(copyText);
-
-      const aiBtn = document.createElement("button");
-      aiBtn.className = "ai-btn";
-      aiBtn.textContent = "🤖";
-      aiBtn.onclick = () => copyToClipboard(aiText);
-
-      const btnRow = document.createElement("div");
-      btnRow.className = "button-row";
-      btnRow.appendChild(copyBtn);
-      btnRow.appendChild(aiBtn);
 
       box.appendChild(img);
       if(labelText !== ""){
         box.appendChild(label);
       }
-      box.appendChild(btnRow);
 
       return { element: box, name: card, reversed: reversed };
     }
@@ -517,27 +511,8 @@
       label.className = "label";
       label.textContent = labelText;
 
-      const copyText = makeBossResultText(labelText, boss, false, false);
-      const aiText = makeBossResultText(labelText, boss, true, true);
-
-      const copyBtn = document.createElement("button");
-      copyBtn.className = "copy-btn";
-      copyBtn.textContent = "🐾";
-      copyBtn.onclick = () => copyToClipboard(copyText);
-
-      const aiBtn = document.createElement("button");
-      aiBtn.className = "ai-btn";
-      aiBtn.textContent = "🤖";
-      aiBtn.onclick = () => copyToClipboard(aiText);
-
-      const btnRow = document.createElement("div");
-      btnRow.className = "button-row";
-      btnRow.appendChild(copyBtn);
-      btnRow.appendChild(aiBtn);
-
       box.appendChild(img);
       box.appendChild(label);
-      box.appendChild(btnRow);
 
       return { element: box, name: boss, label: labelText };
     }
@@ -626,6 +601,26 @@
       box.appendChild(spell);
       box.appendChild(spellButtons);
 
+      area.appendChild(box);
+    }
+
+    function showReturnToTarotBox(){
+      const area = document.getElementById("summary-area");
+
+      const box = document.createElement("div");
+      box.className = "return-box";
+
+      const message = document.createElement("div");
+      message.className = "return-message";
+      message.textContent = "ラスボスは、あなたを守るために現れた守り神様✨\n\n気づいたあなたは、もう大丈夫🌈\n\n今のあなたで、もう一度カードを引いてみよう🐶";
+
+      const btn = document.createElement("button");
+      btn.className = "return-btn";
+      btn.textContent = "今のあなたで、もう一度カードを引く🔮";
+      btn.onclick = () => showTarotScreen();
+
+      box.appendChild(message);
+      box.appendChild(btn);
       area.appendChild(box);
     }
 
@@ -720,14 +715,15 @@
       const copyText = makeBossResultText("今のラスボス", cardObj.name, true, false);
 
       let aiText = "";
-      aiText += "気づいたラスボスです🌈\n";
-      aiText += "やさしく見てください。\n\n";
+      aiText += "気づいた存在です🌈\n";
+      aiText += "ラスボスは、あなたを守るために現れた守り神様✨\n\n";
       if(getQuestion()){
         aiText += "質問：\n" + getQuestion() + "\n\n";
       }
-      aiText += "今のラスボス\n" + cardObj.name.replace(".png","");
+      aiText += "今のラスボス\n" + bossToJapanese(cardObj.name);
 
       showBossSummaryBox(copyText, aiText, spell);
+      showReturnToTarotBox();
     }
 
     function drawBossThree(){
@@ -752,20 +748,21 @@
 
       let copyText = makeHeaderText() + "\n\n";
       cards.forEach(card => {
-        copyText += card.label + "\n" + card.name.replace(".png","") + "\n\n";
+        copyText += card.label + "\n" + bossToJapanese(card.name) + "\n\n";
       });
 
       let aiText = "";
-      aiText += "気づいたラスボスです🌈\n";
-      aiText += "やさしく見てください。\n\n";
+      aiText += "気づいた存在です🌈\n";
+      aiText += "ラスボスは、あなたを守るために現れた守り神様✨\n\n";
       if(getQuestion()){
         aiText += "質問：\n" + getQuestion() + "\n\n";
       }
       cards.forEach(card => {
-        aiText += card.label + "\n" + card.name.replace(".png","") + "\n\n";
+        aiText += card.label + "\n" + bossToJapanese(card.name) + "\n\n";
       });
 
       showBossSummaryBox(copyText, aiText, spell);
+      showReturnToTarotBox();
     }
 
     function resetAll(){
