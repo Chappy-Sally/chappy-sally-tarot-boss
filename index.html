@@ -39,7 +39,8 @@
     }
 
     .welcome-img,
-    .header-img{
+    .header-img,
+    .kami-img{
       width:80%;
       max-width:400px;
       border-radius:20px;
@@ -153,14 +154,6 @@
       margin-bottom:12px;
     }
 
-    .spell-text{
-      font-size:22px;
-      color:#7a4d28;
-      line-height:1.8;
-      margin-top:16px;
-      margin-bottom:10px;
-    }
-
     .summary-buttons{
       display:flex;
       justify-content:center;
@@ -187,11 +180,8 @@
       background:linear-gradient(135deg,#8bb7ff,#6f8fff,#8e7cff);
     }
 
-    .mini-spell{
-      background:linear-gradient(135deg,#ffe08a,#ffc86b,#ffb45e);
-    }
-
-    .return-box{
+    .return-box,
+    .kami-box{
       width:92%;
       max-width:560px;
       margin:22px auto 0;
@@ -201,12 +191,19 @@
       box-shadow:0 4px 10px rgba(0,0,0,0.06);
     }
 
-    .return-message{
+    .return-message,
+    .kami-message{
       font-size:20px;
       color:#7a4d28;
       line-height:1.9;
       margin-bottom:14px;
       white-space:pre-line;
+    }
+
+    .kami-note{
+      font-size:15px;
+      color:#9a7b5d;
+      margin-top:8px;
     }
   </style>
 </head>
@@ -285,6 +282,33 @@
     </div>
   </div>
 
+  <!-- 神様化画面 -->
+  <div id="kami-screen" class="hidden">
+    <div class="title-wrap">
+      <div class="title-icon">✨</div>
+      <h1>やさしい光のステージ</h1>
+      <div class="title-icon">🌈</div>
+    </div>
+
+    <div class="kami-box">
+      <img src="images/boss_kami.png" class="kami-img" alt="神様化チャッピーとサリー"
+           onerror="this.src='images/CS_hyousi.jpg'">
+
+      <div class="kami-message" id="kami-message">
+ラスボスは、
+あなたを守るために現れた
+守神様
+
+気づいたあなたはもう大丈夫🌈
+
+いまのあなたで
+もう一度カードを引いてみよう🐾
+      </div>
+
+      <div class="kami-note">10秒後にタロット画面へ移動します✨</div>
+    </div>
+  </div>
+
   <!-- 共通表示エリア -->
   <div class="cards-area" id="cards"></div>
 
@@ -360,18 +384,7 @@
       boss_return_to_self: "私に戻りたい気持ち"
     };
 
-    const spellList = [
-      "気づかせてくれてありがとう。",
-      "ここまで守ってくれてありがとう。",
-      "もう大丈夫だよ。安心していいよ。",
-      "これからは一緒にやさしく進んでいこうね。",
-      "無理に消えなくていいよ。そのままで大丈夫。",
-      "私はちゃんと私に戻ってるよ。",
-      "がんばらなくても大丈夫。",
-      "そんな私も、まるごとOK。",
-      "あなたがいたから、ここまで来れたよ。",
-      "だいじょうぶだよ〜🐶✨"
-    ];
+    let kamiTimer = null;
 
     function getRandomItem(list){
       return list[Math.floor(Math.random() * list.length)];
@@ -405,18 +418,43 @@
       document.getElementById("summary-area").innerHTML = "";
     }
 
-    function showTarotScreen(){
+    function clearKamiTimer(){
+      if(kamiTimer){
+        clearTimeout(kamiTimer);
+        kamiTimer = null;
+      }
+    }
+
+    function hideAllScreens(){
       document.getElementById("welcome-screen").classList.add("hidden");
+      document.getElementById("tarot-screen").classList.add("hidden");
       document.getElementById("boss-screen").classList.add("hidden");
+      document.getElementById("kami-screen").classList.add("hidden");
+    }
+
+    function showTarotScreen(){
+      clearKamiTimer();
+      hideAllScreens();
       document.getElementById("tarot-screen").classList.remove("hidden");
       clearCards();
     }
 
     function showBossScreen(){
-      document.getElementById("welcome-screen").classList.add("hidden");
-      document.getElementById("tarot-screen").classList.add("hidden");
+      clearKamiTimer();
+      hideAllScreens();
       document.getElementById("boss-screen").classList.remove("hidden");
       clearCards();
+    }
+
+    function showKamiScreen(){
+      clearKamiTimer();
+      hideAllScreens();
+      clearCards();
+      document.getElementById("kami-screen").classList.remove("hidden");
+
+      kamiTimer = setTimeout(() => {
+        showTarotScreen();
+      }, 10000);
     }
 
     function makeHeaderText(){
@@ -426,19 +464,20 @@
 
     function getBasePrompt(){
       return [
-        "あなたは、この人のそばにいるやさしい相棒です🐶✨",
+        "これからカードを引いて対話します❣",
+        "当てたり 正解を出したりしなくて大丈夫です☝️",
+        "やさしく 安心を大切にしながら",
+        "今の私の気持ちを",
+        "一緒に整理してください😊",
+        "必要以上に深掘りせず",
+        "今ここで立ち止まっても大丈夫です。",
+        "質問は 1〜2問までで十分です。",
+        "私が「もう十分」と感じたら",
+        "ありがとうで終わります。",
         "",
-        "カードをひとつづつ簡潔に解読した上で",
-        "全体をひとつの流れでやさしくまとめてください。",
-        "",
-        "断定せず、寄り添う言葉で伝えてください。",
-        "がんばらせるのではなく、心がゆるむ言葉にしてください。",
-        "",
-        "文章は短めで、シンプルにしてください。",
-        "長く説明しすぎないでください。",
-        "",
-        "最後に「相棒まとめ🐶✨」として、",
-        "一言でやさしく伝えてください。"
+        "カードの意味を説明しすぎず、",
+        "今の私に必要なことだけを",
+        "やさしく伝えてください。"
       ].join("\n");
     }
 
@@ -555,7 +594,7 @@
       area.appendChild(box);
     }
 
-    function showBossSummaryBox(copyText, aiText, spellText){
+    function showBossSummaryBox(copyText, aiText){
       const area = document.getElementById("summary-area");
       area.innerHTML = "";
 
@@ -582,25 +621,8 @@
       buttons.appendChild(copyBtn);
       buttons.appendChild(aiBtn);
 
-      const spell = document.createElement("div");
-      spell.className = "spell-text";
-      spell.textContent = spellText;
-
-      const spellButtons = document.createElement("div");
-      spellButtons.className = "summary-buttons";
-
-      const spellBtn = document.createElement("button");
-      spellBtn.className = "mini-btn mini-spell";
-      spellBtn.textContent = "呪文をコピー🌈";
-      spellBtn.onclick = () => copyToClipboard(spellText);
-
-      spellButtons.appendChild(spellBtn);
-
       box.appendChild(title);
       box.appendChild(buttons);
-      box.appendChild(spell);
-      box.appendChild(spellButtons);
-
       area.appendChild(box);
     }
 
@@ -613,14 +635,14 @@
       const message = document.createElement("div");
       message.className = "return-message";
       message.textContent =
-  "ラスボスは、あなたを守るために現れた守り神様✨\n\n" +
-  "気づいたあなたは、もう大丈夫🌈\n\n" +
-  "今のあなたで、もう一度カードを引いてみよう🐶";
+        "ラスボスは、あなたを守るために現れた\n守神様\n\n" +
+        "気づいたあなたはもう大丈夫🌈\n\n" +
+        "いまのあなたで\nもう一度カードを引いてみよう🐾";
 
       const btn = document.createElement("button");
       btn.className = "return-btn";
-      btn.textContent = "今のあなたで、もう一度カードを引く🔮";
-      btn.onclick = () => showTarotScreen();
+      btn.textContent = "もう一度タロットを引く🔮";
+      btn.onclick = () => showKamiScreen();
 
       box.appendChild(message);
       box.appendChild(btn);
@@ -710,9 +732,7 @@
     function drawBossOne(){
       clearCards();
 
-      const spell = getRandomItem(spellList);
       const cardObj = createBossCard("今のラスボス");
-
       document.getElementById("cards").appendChild(cardObj.element);
 
       const copyText = makeBossResultText("今のラスボス", cardObj.name, true, false);
@@ -725,14 +745,13 @@
       }
       aiText += "今のラスボス\n" + bossToJapanese(cardObj.name);
 
-      showBossSummaryBox(copyText, aiText, spell);
+      showBossSummaryBox(copyText, aiText);
       showReturnToTarotBox();
     }
 
     function drawBossThree(){
       clearCards();
 
-      const spell = getRandomItem(spellList);
       const selectedBosses = getRandomItems(bossFiles, 3);
 
       const card1 = createBossCard("今のラスボス", selectedBosses[0]);
@@ -764,16 +783,16 @@
         aiText += card.label + "\n" + bossToJapanese(card.name) + "\n\n";
       });
 
-      showBossSummaryBox(copyText, aiText, spell);
+      showBossSummaryBox(copyText, aiText);
       showReturnToTarotBox();
     }
 
     function resetAll(){
+      clearKamiTimer();
       clearCards();
       document.getElementById("question").value = "";
       document.getElementById("username").value = "";
-      document.getElementById("tarot-screen").classList.add("hidden");
-      document.getElementById("boss-screen").classList.add("hidden");
+      hideAllScreens();
       document.getElementById("welcome-screen").classList.remove("hidden");
     }
   </script>
